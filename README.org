@@ -17,15 +17,20 @@
    - The lower the score the greater the distance to the reconciliation candidate
    - The score is scaled so that a distance of 10km yields a score of 50
 
+** Configuration
+   The plugin can be controlled via ~SCOREOPTIONS~ in the csv-reconcile ~--config~ file.
+   ~SCOREOPTIONS~ is a [[https://www.w3schools.com/python/python_dictionaries.asp][Python dictionary]] and thus has the following form ~SCOREOPTIONS={
+   "key1":"value1,"key2":"value2"}~.
+   - ~SCALE~ set distance in kilometers at which a score of 50 occurs.  ( Default 10km )  e.g. ~"SCALE":2~
+   - ~COORDRANGE~ If supplied do a precheck that both the latitude and the longitude of the compared
+     values are within range.  This is for performance to avoid the more expensive distance
+     calculation for points farther apart. e.g. ~"COORDRANGE":"1"~
+
 ** Future enhancements
    Some of the current implementation was driven by the current design of csv-reconcile.  Both may
    be updated to accommodate the following:
 
    - Allow for separate latitude and longitude column in the CSV file
-   - Do some preliminary checks on coordinates before calculating distance for performance
    - Add some scoring options such as the following:
-     - Change the scale of the scoring to place the distance for a score of 50 somewhere else for
-       better granularity
      - Allow for overriding the scaling function
      - etc.
-

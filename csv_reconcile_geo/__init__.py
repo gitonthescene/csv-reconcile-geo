@@ -1,4 +1,4 @@
-__version__ = '0.1.1'
+__version__ = '0.1.2'
 
 from csv_reconcile import scorer
 from geopy import distance
@@ -6,7 +6,7 @@ from math import pi, atan, log
 
 
 # [[https://en.wikipedia.org/wiki/Sigmoid_function]]
-def scaleScore(dist):
+def scaleScore(dist, scale):
     '''
     Scaling function so that distances from 0 -> inf get mapped to 100% -> 0%
     Uses atan() as a sigmoid function and log(1/dist) to convert from 0 -> inf to inf -> -inf.
@@ -17,8 +17,16 @@ def scaleScore(dist):
 
     I.e. The closer the distance is to zero the higher the score.
     '''
-    scale = 10  # km at which score is 50%
     return (atan(log(scale / dist)) + pi / 2) / pi * 100
+
+
+@scorer.register
+def processScoreOptions(options):
+    # Make sure scale and coordRange are floats if they exists
+    for optnm in ('SCALE', 'COORDRANGE'):
+        opt = options.get(optnm, None)
+        if opt:
+            options[optnm] = float(opt)
 
 
 @scorer.register
@@ -27,15 +35,22 @@ def getNormalizedFields():
 
 
 @scorer.register
-def scoreMatch(left, right):
+def scoreMatch(left, right, **scoreOptions):
+
+    # If coordRange is supplied make sure that both the latitude and longitude are within range
+    coordRange = scoreOptions.get('COORDRANGE', None)
+    if coordRange and not all(
+            abs(float(a) - float(b)) < coordRange for a, b in zip(left, right)):
+        return None
+
     dist = distance.geodesic(left, right).km
-    # report max straight off to avoid division by zeron in scaling function
+    # report max straight off to avoid division by zero in scaling function
     if dist == 0.0:
         return 100.0
 
     # Normalize so 0 -> 100% and big number -> 0%
-    # FIX ME - Add a scaling factor to control how fast the decay happens.
-    return scaleScore(dist)
+    scale = scoreOptions.get('SCALE', 10)
+    return scaleScore(dist, scale)
 
 
 @scorer.register
@@ -55,4 +70,6 @@ def normalizeWord(word, **scoreOptions):
         raise RuntimeError('Expected wktLiteral POINT value.  Got "%s"',
                            originalWord)
 
-    return tuple(float(x) for x in word[6:-1].split(None, 1))
+    lon, lat = tuple(float(x) for x in word[6:-1].split(None, 1))
+
+    return (lat, lon)
