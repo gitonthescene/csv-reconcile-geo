@@ -63,7 +63,7 @@ description = "OpenRefine reconciliation service backed by csv resource"
 name = "csv-reconcile"
 optional = false
 python-versions = ">=3.7,<4.0"
-version = "0.2.1"
+version = "0.2.3"
 
 [package.dependencies]
 cython = ">=0.29.21,<0.30.0"
@@ -374,9 +374,9 @@ colorama = [
     {file = "colorama-0.4.4.tar.gz", hash = "sha256:5941b2b48a20143d2267e95b1c2a7603ce057ee39fd88e7329b0c292aa16869b"},
 ]
 csv-reconcile = [
-    {file = "csv-reconcile-0.2.1.tar.gz", hash = "sha256:d01198b8eaf86b92f16af70e7e7341a7b0a2b4abb1beab321dd7b9474efac632"},
-    {file = "csv_reconcile-0.2.1-cp37-cp37m-macosx_11_0_x86_64.whl", hash = "sha256:b75651f15b3263734e50b64800523208764b7ec2f2822c2f2edf3d43a99e869a"},
-    {file = "csv_reconcile-0.2.1-py3-none-any.whl", hash = "sha256:0e8b124e88a32ae9095057aa7c4a7cb5b8f040e83a7900cbe3051bba5b21d834"},
+    {file = "csv-reconcile-0.2.3.tar.gz", hash = "sha256:26fbd1aaf7eab83f32b332b8f54c166d893466acb6123fc6e76af610e0a6b9cd"},
+    {file = "csv_reconcile-0.2.3-cp37-cp37m-macosx_11_0_x86_64.whl", hash = "sha256:423ec66751ed2ad4403837329291d267cd485338ca169838ed2da3de169dec8a"},
+    {file = "csv_reconcile-0.2.3-py3-none-any.whl", hash = "sha256:2ba4f7aac93ceaf3347f8a26960712d931d31e8fe72b2c940104245b97700b49"},
 ]
 cython = [
     {file = "Cython-0.29.23-cp27-cp27m-macosx_10_9_x86_64.whl", hash = "sha256:ff885f18d169759b57f116d3956e45cd2b9cba989fde348bba091544c668dc11"},
