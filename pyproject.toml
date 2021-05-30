@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "csv-reconcile-geo"
-version = "0.1.4"
+version = "0.1.5"
 description = "Geo distance scoring plugin for csv-reconcile"
 authors = ["Douglas Mennella <trx2358-pypi@yahoo.com>"]
 license = "MIT"
