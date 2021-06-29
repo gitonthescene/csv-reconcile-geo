@@ -28,7 +28,7 @@ test = "nox"
 pandoc = { cmd = "pandoc README.org --toc -f org -t markdown_strict -s -o README.md" }
 publish = [
   { ref = "pandoc" },
-  { ref = "nox" },
+  { ref = "test" },
   { cmd = "poetry publish" }
 ]
 
