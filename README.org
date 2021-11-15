@@ -1,6 +1,67 @@
 * CSV Reconcile Geo distance scoring plugin
   A scoring plugin for [[https://github.com/gitonthescene/csv-reconcile][csv-reconcile]] using geodesic distance.  See csv-reconcile for details.
 
+** Example
+   You can generate a csv file from a SPARQL query using [[https://github.com/maxlath/wikibase-cli][wikibase-cli]] like so:
+
+   : $ cat /tmp/nyc-lakes.rq
+   : SELECT ?itemLabel ?item (SAMPLE(?coords1) AS ?coords) WHERE {
+   :   ?item wdt:P31 wd:Q23397.
+   :   ?item wdt:P17 wd:Q30.
+   :   ?item wdt:P131* wd:Q60.
+   :   ?item wdt:P625 ?coords1.
+   :   SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
+   : } GROUP BY ?item ?itemLabel
+   : $ wd sparql /tmp/nyc-lakes.rq --format tsv
+   : ?itemLabel	?item	?coords
+   : "Collect Pond"@en	<http://www.wikidata.org/entity/Q5146020>	"Point(-74.00167 40.71639)"^^<http://www.opengis.net/ont/geosparql#wktLiteral>
+   : "Harlem Meer"@en	<http://www.wikidata.org/entity/Q3508849>	"Point(-73.9517 40.7966)"^^<http://www.opengis.net/ont/geosparql#wktLiteral>
+   : "The Lake"@en	<http://www.wikidata.org/entity/Q104523187>	"Point(-73.9725 40.7765)"^^<http://www.opengis.net/ont/geosparql#wktLiteral>
+   : "Williamsbridge Reservoir"@en	<http://www.wikidata.org
+   : $
+
+   You could just as well use the [[https://query.wikidata.org/][Query Service]] and Download to tsv.  (/Note:/ tsv is the default
+   separator in ~csv-reconcile~, but this can be changed using a config file)
+
+   Then you can fire up a csv service with this file which does fuzzy search against this data based
+   on the coordinates.
+
+   : (venv) $ python -m pip install csv-reconcile
+   : ...
+   : (venv) $ python -m pip install csv-reconcile-geo
+   : (venv) $ wd sparql /tmp/nyc-lakes.rq --format tsv > /tmp/nyc-lakes.tsv
+   : (venv) $
+   : (venv) $   # I had to do a little clean up to remove blank lines and remove ? from column names
+   : (venv) $
+   : (venv) $ csv-reconcile /tmp/nyc-lakes.tsv 'item' 'coords' --scorer geo
+   :  * Serving Flask app 'csv-reconcile' (lazy loading)
+   :  * Environment: production
+   :    WARNING: This is a development server. Do not use it in a production deployment.
+   :    Use a production WSGI server instead.
+   :  * Debug mode: off
+   :  * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+
+   Now generating a project with the following SPARQL:
+
+   #+begin_src sql
+     SELECT ?itemLabel ?item (SAMPLE(?coords1) AS ?coords) WHERE {
+       ?item wdt:P31 wd:Q23397.
+       ?item wdt:P17 wd:Q30.
+       ?item wdt:P131* wd:Q60.
+       ?item wdt:P625 ?coords1.
+       SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
+     } GROUP BY ?item ?itemLabel
+   #+end_src
+
+   I can use reconciliation on the ~coords~ column to find out which of the lakes in NYC is closest
+   to the Empire State Building.
+
+   Note that it handles the extra data types just in the coordinate column just fine, though you may
+   want to clean that up.  Similarly for the Qid to make it easier to reconcile by id against
+   Wikidata in order to find more data.
+
+   Also, see configuration options below.
+
 ** Reconciliation
    This plugin is used to reconcile values representing points on the globe.  It expects those
    values to be in [[https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry][well-known text]] format for a point.  That is, like so: ~POINT( longitude latitude )~.
