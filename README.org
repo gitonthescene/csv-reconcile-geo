@@ -31,9 +31,9 @@
    : (venv) $ python -m pip install csv-reconcile-geo
    : (venv) $ wd sparql /tmp/nyc-lakes.rq --format tsv > /tmp/nyc-lakes.tsv
    : (venv) $
-   : (venv) $   # I had to do a little clean up to remove blank lines and remove ? from column names
+   : (venv) $   # I had to do a little clean up to remove blank line at the end
    : (venv) $
-   : (venv) $ csv-reconcile /tmp/nyc-lakes.tsv 'item' 'coords' --scorer geo
+   : (venv) $ csv-reconcile /tmp/nyc-lakes.tsv '?item' '?coords' --scorer geo
    :  * Serving Flask app 'csv-reconcile' (lazy loading)
    :  * Environment: production
    :    WARNING: This is a development server. Do not use it in a production deployment.
