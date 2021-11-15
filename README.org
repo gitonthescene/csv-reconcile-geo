@@ -56,7 +56,7 @@
    I can use reconciliation on the ~coords~ column to find out which of the lakes in NYC is closest
    to the Empire State Building.
 
-   Note that it handles the extra data types just in the coordinate column just fine, though you may
+   Note that it handles the extra data types in the coordinate column just fine, though you may
    want to clean that up.  Similarly for the Qid to make it easier to reconcile by id against
    Wikidata in order to find more data.
 
