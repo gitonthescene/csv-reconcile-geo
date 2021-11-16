@@ -20,8 +20,10 @@
    : "Williamsbridge Reservoir"@en	<http://www.wikidata.org
    : $
 
-   You could just as well use the [[https://query.wikidata.org/][Query Service]] and Download to tsv.  (/Note:/ tsv is the default
-   separator in ~csv-reconcile~, but this can be changed using a config file)
+   You could just as well use the [[https://query.wikidata.org/][Query Service]] and Download to tsv.  /Note:/ tsv is the default
+   separator in ~csv-reconcile~, but this can be changed using a config file.
+
+   Note that ~SAMPLE~ is used here to ensure we have only one coordinate for each item.
 
    Then you can fire up a csv service with this file which does fuzzy search against this data based
    on the coordinates.
@@ -45,9 +47,7 @@
 
    #+begin_src sql
      SELECT ?itemLabel ?item (SAMPLE(?coords1) AS ?coords) WHERE {
-       ?item wdt:P31 wd:Q23397.
-       ?item wdt:P17 wd:Q30.
-       ?item wdt:P131* wd:Q60.
+       VALUES ?item { wd:Q9188 }
        ?item wdt:P625 ?coords1.
        SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
      } GROUP BY ?item ?itemLabel
